@@ -1,0 +1,15 @@
+CREATE OR REPLACE VIEW `orderdetails` AS
+SELECT   COUNT(cart.cart_id) as itemcount , SUM(items.items_price - items.items_price * items.items_discount / 100 ) as itemprice  ,  cart.* , items.* FROM cart 
+INNER JOIN    items ON cart.cart_itemsid = items.items_id AND cart.cart_orders != 0
+GROUP BY cart.cart_usersid , cart.cart_itemsid , cart.cart_orders
+
+
+
+CREATE or REPLACE VIEW orderaddress AS
+SELECT orders.* , address.* FROM orders
+LEFT JOIN address ON orders.orders_address = address.address_id
+
+
+CREATE or REPLACE VIEW allorderdetails AS
+SELECT orderdetails.* , orderaddress.* FROM orderdetails
+INNER JOIN orderaddress WHERE orderdetails.cart_orders = orderaddress.orders_id
